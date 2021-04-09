@@ -32,6 +32,7 @@ RUN cd edk2 && \
 
 # linux
 RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
+RUN dnf --repo powertools install dwarves -y
 RUN git clone https://github.com/torvalds/linux.git
 RUN cd linux && \
     git checkout v5.12-rc6 && \
