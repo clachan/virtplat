@@ -12,6 +12,7 @@ podman build --tag virtplat --jobs 32 .
 
 ```shell
 podman run -it --rm --privileged --name my_virtplat virtplat
+./start_qemu.sh
 ```
 
 ## How to debug kernel
