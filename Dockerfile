@@ -73,6 +73,7 @@ mount -t devpts none /dev/pts\n\
 \n\
 exec /bin/sh' > ./init && \
     chmod +x ./init && \
-    wget https://git.busybox.net/busybox/plain/examples/udhcp/simple.script -O etc/simple.script && \
-    chmod +x etc/simple.script && \
+    wget https://git.busybox.net/busybox/plain/examples/udhcp/simple.script -O etc/dhcp.script && \
+    sed -i 's/nameserver $i/nameserver 8.8.8.8/g' etc/dhcp.script
+    chmod +x etc/dhcp.script && \
     find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initramfs.cpio.gz

@@ -8,6 +8,7 @@ qemu/x86_64-softmmu/qemu-system-x86_64 \
     -blockdev node-name=libvirt-pflash0-format,read-only=on,driver=raw,file=libvirt-pflash0-storage \
     -blockdev driver=file,filename=edk2/Build/Ovmf3264/DEBUG_GCC5/FV/OVMF_VARS.fd,node-name=libvirt-pflash1-storage,auto-read-only=on,discard=unmap \
     -blockdev node-name=libvirt-pflash1-format,read-only=on,driver=raw,file=libvirt-pflash1-storage \
+    -netdev user,id=user.0 -device virtio-net-pci,netdev=user.0 \
     -m 16384M \
     -nographic \
     -cpu Icelake-Server \
