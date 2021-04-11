@@ -72,7 +72,6 @@ RUN dnf install cgdb -y
 
 # add start scripts
 ADD ./start_qemu.sh .
-ADD ./start_qemu2.sh .
 ADD ./start_uefi_shell.sh .
 ADD ./debug_uefi_shell.sh .
 ADD ./debug_linux.sh .
