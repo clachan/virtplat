@@ -74,6 +74,8 @@ RUN dnf install cgdb -y
 ADD ./start_qemu.sh .
 ADD ./start_qemu2.sh .
 ADD ./start_uefi_shell.sh .
+ADD ./debug_uefi_shell.sh .
+ADD ./debug_linux.sh .
 
 # add hda-contents for UEFI Shell
 RUN mkdir -p hda-contents
