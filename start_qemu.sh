@@ -11,7 +11,7 @@ fi
 
 qemu/x86_64-softmmu/qemu-system-x86_64 \
     -kernel linux/arch/x86/boot/bzImage \
-    -append "console=ttyS0 nokaslr $VIRTPLAT_ROOTFS" \
+    -append "console=ttyS0 nokaslr norandmaps $VIRTPLAT_ROOTFS" \
     -initrd rootfs/initramfs.cpio.gz \
     -blockdev driver=file,filename=edk2/Build/Ovmf3264/DEBUG_GCC5/FV/OVMF_CODE.fd,node-name=libvirt-pflash0-storage,auto-read-only=on,discard=unmap \
     -blockdev node-name=libvirt-pflash0-format,read-only=on,driver=raw,file=libvirt-pflash0-storage \
@@ -24,4 +24,5 @@ qemu/x86_64-softmmu/qemu-system-x86_64 \
     -netdev user,id=user.0 -device virtio-net-pci,netdev=user.0 \
     -enable-kvm \
     -nographic \
+    -debugcon file:ovmf-debug.log -global isa-debugcon.iobase=0x402 \
     -s
