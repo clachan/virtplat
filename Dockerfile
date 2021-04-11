@@ -31,7 +31,7 @@ RUN cd edk2 && \
 
 # linux
 RUN mkdir linux_config
-COPY ./linux_config/* ./linux_config
+COPY ./linux_config/* ./linux_config/
 RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
 RUN dnf --repo powertools install dwarves -y
 RUN git clone -b v5.12-rc6 --single-branch --depth 1 https://github.com/torvalds/linux.git
