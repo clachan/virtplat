@@ -65,4 +65,17 @@ RUN cd rootfs/initramfs && \
 RUN wget https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img \
     -O rootfs/ubuntu-20.04-server-cloudimg-amd64.img -q
 
+# install cgdb
+RUN dnf install epel-release -y
+RUN dnf install cgdb -y
+
+# add start scripts
 ADD ./start_qemu.sh .
+ADD ./start_qemu2.sh .
+ADD ./start_uefi_shell.sh .
+
+# add hda-contents for UEFI Shell
+RUN mkdir -p hda-contents
+RUN cd hda-contents && \
+    ln -s ../linux/arch/x86/boot/bzImage && \
+    ln -s ../rootfs/initramfs.cpio.gz
