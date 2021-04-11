@@ -37,7 +37,8 @@ RUN dnf --repo powertools install dwarves -y
 RUN git clone -b v5.12-rc6 --single-branch --depth 1 https://github.com/torvalds/linux.git
 RUN cd linux && \
     scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../linux_config/* && \
-    make ARCH=x86_64 bzImage -j $(getconf _NPROCESSORS_ONLN)
+    make ARCH=x86_64 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
+    make scripts_gdb
 
 # busybox
 RUN dnf install perl-Pod-Html -y
