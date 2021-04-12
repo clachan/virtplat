@@ -14,22 +14,35 @@ podman build --tag virtplat --jobs 32 .
 podman run -it --rm --privileged --name my_virtplat virtplat
 ./start_qemu.sh
 ```
+or
+```shell
+./build.sh
+```
 
 ## How to debug kernel
 
 Open another terminal to connect to my_virtplat
 ```shell
-docker exec -it my_virtplat /bin/bash
+podman exec -it my_virtplat /bin/bash
 ```
-
-Install gdb
+or
 ```shell
-dnf install gdb
+./run.sh
+```
+then run
+```shell
+./start_qemu.sh
+```
+to start qemu.
+
+If you want to use Ubuntu as the root file system (2nd stage), type:
+```shell
+./start_qemu.sh virtplat_rootfs=ubuntu
 ```
 
 Start gdb
 ```shell
-gdb linux/vmlinux
+./debug_linux.sh
 ```
 
 Set breakpoint and happy debugging!
