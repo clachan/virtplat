@@ -7,8 +7,15 @@ My QEMU-based virtual platform setup
 git clone https://github.com/clachan/virtplat
 podman build --tag virtplat --jobs 32 .
 ```
+or
+```shell
+git clone https://github.com/clachan/virtplat
+./build.sh
+```
 
 ## How to use
+
+* replace podman with docker if you prefer to use docker
 
 ```shell
 podman run -it --rm --privileged --name my_virtplat virtplat
@@ -16,7 +23,8 @@ podman run -it --rm --privileged --name my_virtplat virtplat
 ```
 or
 ```shell
-./build.sh
+./run.sh
+./start_qemu.sh
 ```
 
 ## How to debug kernel
