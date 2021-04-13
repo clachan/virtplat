@@ -34,7 +34,7 @@ RUN mkdir linux_config
 COPY ./linux_config/* ./linux_config/
 RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
 RUN dnf --repo powertools install dwarves -y
-RUN git clone -b v5.12-rc6 --single-branch --depth 1 https://github.com/torvalds/linux.git
+RUN git clone -b v5.12-rc7 --single-branch --depth 1 https://github.com/torvalds/linux.git
 RUN cd linux && \
     scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../linux_config/* && \
     make ARCH=x86_64 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
