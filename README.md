@@ -3,6 +3,8 @@ My QEMU-based virtual platform setup
 
 ## How to build
 
+* replace podman with docker if you prefer to use docker
+
 ```shell
 git clone https://github.com/clachan/virtplat
 podman build --tag virtplat --jobs 32 .
@@ -14,8 +16,6 @@ git clone https://github.com/clachan/virtplat
 ```
 
 ## How to use
-
-* replace podman with docker if you prefer to use docker
 
 ```shell
 podman run -it --rm --privileged --name my_virtplat virtplat
