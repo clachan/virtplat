@@ -1,3 +1,3 @@
 #!/bin/bash
 
-podman run -it --rm --privileged --name my_virtplat virtplat
+podman run -it --rm --privileged -v $PWD:/host --name my_virtplat virtplat
