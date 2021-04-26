@@ -63,8 +63,8 @@ RUN cd rootfs/initramfs && \
     find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initramfs.cpio.gz
 
 # fetch ubuntu cloud image
-RUN wget https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img \
-    -O rootfs/ubuntu-20.04-server-cloudimg-amd64.img -q
+RUN wget https://cloud-images.ubuntu.com/releases/hirsute/release/ubuntu-21.04-server-cloudimg-amd64.img \
+    -O rootfs/ubuntu-21.04-server-cloudimg-amd64.img
 
 # install cgdb
 RUN dnf install epel-release -y

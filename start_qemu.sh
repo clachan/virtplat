@@ -3,7 +3,7 @@
 if [ $# -gt 0 ]
 then
   VIRTPLAT_ROOTFS="virtplat_rootfs=ubuntu"
-  VIRTPLAT_ROOTFS_DRIVE="-drive file=rootfs/ubuntu-20.04-server-cloudimg-amd64.img"
+  VIRTPLAT_ROOTFS_DRIVE="-drive file=rootfs/ubuntu-21.04-server-cloudimg-amd64.img"
 else
   VIRTPLAT_ROOTFS=""
   VIRTPLAT_ROOTFS_DRIVE=""
