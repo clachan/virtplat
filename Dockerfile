@@ -25,7 +25,7 @@ RUN cd edk2 && \
     build -a IA32 -a X64 -p OvmfPkg/OvmfPkgIa32X64.dsc \
       -D SMM_REQUIRE -D SECURE_BOOT_ENABLE \
       -D HTTP_BOOT_ENABLE -D TLS_ENABLE \
-      -t GCC5 \
+      -t CLANGPDB \
       -b DEBUG \
       -n $(getconf _NPROCESSORS_ONLN)
 
