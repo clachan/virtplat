@@ -32,13 +32,13 @@ RUN cd edk2 && \
 # linux
 RUN mkdir linux_config
 COPY ./linux_config/* ./linux_config/
-RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
+RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc llvm llvm-devel clang lld -y
 RUN dnf --repo powertools install dwarves -y
 RUN git clone -b v5.12 --single-branch --depth 1 https://github.com/torvalds/linux.git
 RUN cd linux && \
     scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../linux_config/* && \
-    make ARCH=x86_64 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
-    make scripts_gdb
+    make ARCH=x86_64 LLVM=1 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
+    make LLVM=1 scripts_gdb
 
 # busybox
 RUN dnf install perl-Pod-Html -y
