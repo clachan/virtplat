@@ -27,6 +27,8 @@ if [[ "`cat /proc/cmdline`" =~ "virtplat_rootfs=ubuntu" ]]
 then
   mkdir /dev/pts
   mount -t devpts none /dev/pts
+  mount -t debugfs debugfs /sys/kernel/debug
+  mount -t securityfs securityfs /sys/kernel/security
 
   mkdir -p /mnt/ubuntu
   mount /dev/sda1 /mnt/ubuntu
