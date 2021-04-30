@@ -1,26 +1,33 @@
-FROM centos:8
+FROM fedora:34
 
 RUN dnf update -y
 RUN dnf install git make automake gcc gcc-c++ python3 wget -y
 
-RUN mkdir -p /virtplat
+#RUN mkdir -p /virtplat
 WORKDIR /virtplat
 
 # qemu
-RUN dnf install bzip2 glib2-devel zlib-devel pixman-devel -y
-RUN git clone -b stable-5.0 --single-branch --depth 1 https://github.com/qemu/qemu
+RUN dnf install bzip2 glib2-devel zlib-devel pixman-devel diffutils -y
+RUN pip3 install ninja
+#RUN git clone -b stable-5.0 --single-branch --depth 1 https://github.com/qemu/qemu
+#RUN cd qemu && \
+#    git submodule update --init && \
+#    ./configure --target-list=x86_64-softmmu && \
+#    make -j $(getconf _NPROCESSORS_ONLN)
 RUN cd qemu && \
-    git submodule update --init && \
     ./configure --target-list=x86_64-softmmu && \
     make -j $(getconf _NPROCESSORS_ONLN)
 
 # edk2
-RUN dnf install libuuid-devel acpica-tools python36-devel -y
+RUN dnf install libuuid-devel acpica-tools python36-devel llvm llvm-devel clang lld -y
 RUN dnf --repo powertools install nasm -y
-RUN git clone --branch edk2-stable202102 --single-branch --depth 1 https://github.com/tianocore/edk2
+#RUN git clone --branch edk2-stable202102 --single-branch --depth 1 https://github.com/tianocore/edk2
+#RUN cd edk2 && \
+#    git submodule update --init && \
 RUN cd edk2 && \
-    git submodule update --init && \
     source ./edksetup.sh && \
+    export EDK_TOOLS_PATH=$PWD/BaseTools && \\
+    make -C $EDK_TOOLS_PATH clean && \
     make -C $EDK_TOOLS_PATH -j $(getconf _NPROCESSORS_ONLN) && \
     build -a IA32 -a X64 -p OvmfPkg/OvmfPkgIa32X64.dsc \
       -D SMM_REQUIRE -D SECURE_BOOT_ENABLE \
@@ -30,12 +37,13 @@ RUN cd edk2 && \
       -n $(getconf _NPROCESSORS_ONLN)
 
 # linux
-RUN mkdir linux_config
-COPY ./linux_config/* ./linux_config/
-RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc llvm llvm-devel clang lld -y
+#RUN mkdir linux_config
+#COPY ./linux_config/* ./linux_config/
+RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
 RUN dnf --repo powertools install dwarves -y
-RUN git clone -b v5.12 --single-branch --depth 1 https://github.com/torvalds/linux.git
+#RUN git clone -b v5.12 --single-branch --depth 1 https://github.com/torvalds/linux.git
 RUN cd linux && \
+    make mrproper && \
     scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../linux_config/* && \
     make ARCH=x86_64 LLVM=1 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
     make LLVM=1 scripts_gdb
