@@ -15,7 +15,7 @@ RUN cd qemu && \
     make -j $(getconf _NPROCESSORS_ONLN)
 
 # edk2
-RUN dnf install libuuid-devel acpica-tools python36-devel -y
+RUN dnf install libuuid-devel acpica-tools python36-devel clang lld llvm-devel -y
 RUN dnf --repo powertools install nasm -y
 RUN git clone --branch edk2-stable202102 --single-branch --depth 1 https://github.com/tianocore/edk2
 RUN cd edk2 && \
@@ -32,7 +32,7 @@ RUN cd edk2 && \
 # linux
 RUN mkdir linux_config
 COPY ./linux_config/* ./linux_config/
-RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc llvm llvm-devel clang lld -y
+RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
 RUN dnf --repo powertools install dwarves -y
 RUN git clone -b v5.12 --single-branch --depth 1 https://github.com/torvalds/linux.git
 RUN cd linux && \
