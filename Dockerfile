@@ -8,7 +8,8 @@ WORKDIR /virtplat
 
 # qemu
 RUN dnf install bzip2 glib2-devel zlib-devel pixman-devel -y
-RUN git clone -b stable-5.0 --single-branch --depth 1 https://github.com/qemu/qemu
+RUN pip3 install ninja
+RUN git clone -b v6.0.0 --single-branch --depth 1 https://github.com/qemu/qemu
 RUN cd qemu && \
     git submodule update --init && \
     ./configure --target-list=x86_64-softmmu && \
