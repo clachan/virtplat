@@ -3,24 +3,19 @@ FROM centos:8
 RUN dnf update -y
 RUN dnf install git make automake gcc gcc-c++ python3 wget -y
 
-RUN mkdir -p /virtplat
 WORKDIR /virtplat
 
 # qemu
 RUN dnf install bzip2 glib2-devel zlib-devel pixman-devel -y
 RUN pip3 install ninja
-RUN git clone -b v6.0.0 --single-branch --depth 1 https://github.com/qemu/qemu
-RUN cd qemu && \
-    git submodule update --init && \
+RUN cd src/qemu && \
     ./configure --target-list=x86_64-softmmu && \
     make -j $(getconf _NPROCESSORS_ONLN)
 
 # edk2
-RUN dnf install libuuid-devel acpica-tools python36-devel clang lld llvm-devel -y
+RUN dnf install libuuid-devel acpica-tools python3-devel llvm llvm-devel clang lld -y
 RUN dnf --repo powertools install nasm -y
-RUN git clone --branch edk2-stable202102 --single-branch --depth 1 https://github.com/tianocore/edk2
-RUN cd edk2 && \
-    git submodule update --init && \
+RUN cd src/edk2 && \
     source ./edksetup.sh && \
     make -C $EDK_TOOLS_PATH -j $(getconf _NPROCESSORS_ONLN) && \
     build -a IA32 -a X64 -p OvmfPkg/OvmfPkgIa32X64.dsc \
@@ -31,41 +26,38 @@ RUN cd edk2 && \
       -n $(getconf _NPROCESSORS_ONLN)
 
 # linux
-RUN mkdir linux_config
-COPY ./linux_config/* ./linux_config/
 RUN dnf install flex bison openssl-devel elfutils-libelf-devel bc -y
 RUN dnf --repo powertools install dwarves -y
-RUN git clone -b v5.12 --single-branch --depth 1 https://github.com/torvalds/linux.git
-RUN cd linux && \
-    scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../linux_config/* && \
+RUN cd src/linux && \
+    make mrproper && \
+    scripts/kconfig/merge_config.sh arch/x86/configs/x86_64_defconfig ../../linux_config/* && \
     make ARCH=x86_64 LLVM=1 bzImage -j $(getconf _NPROCESSORS_ONLN) && \
     make LLVM=1 scripts_gdb
 
 # busybox
 RUN dnf install perl-Pod-Html -y
 RUN dnf --repo powertools install glibc-static -y
-RUN git clone -b 1_33_stable --single-branch --depth 1 https://github.com/mirror/busybox.git
-RUN cd busybox && \
+RUN cd src/busybox && \
     make defconfig && \
     sed "/CONFIG_STATIC is not set/s/.*/CONFIG_STATIC=y/" -i .config && \
     make -j $(getconf _NPROCESSORS_ONLN) && \
     make install
 
 # initramfs
-RUN mkdir rootfs && \
+RUN mkdir -p rootfs && \
     cd rootfs && \
     mkdir -p initramfs/{bin,sbin,etc,proc,sys,dev,usr/{bin,sbin}}
 COPY ./initramfs-init rootfs/initramfs/init
 COPY ./dhcp.script rootfs/initramfs/etc/dhcp.script
 RUN cd rootfs/initramfs && \
-    cp -a ../../busybox/_install/* . && \
+    cp -a ../../src/busybox/_install/* . && \
     chmod +x init && \
     chmod +x etc/dhcp.script && \
     find . -print0 | cpio --null -ov --format=newc | gzip -9 > ../initramfs.cpio.gz
 
 # fetch ubuntu cloud image
-RUN wget https://cloud-images.ubuntu.com/releases/hirsute/release/ubuntu-21.04-server-cloudimg-amd64.img \
-    -O rootfs/ubuntu-21.04-server-cloudimg-amd64.img
+#RUN wget https://cloud-images.ubuntu.com/releases/hirsute/release/ubuntu-21.04-server-cloudimg-amd64.img \
+#    -O rootfs/ubuntu-21.04-server-cloudimg-amd64.img
 
 # install cgdb
 RUN dnf install epel-release -y
@@ -80,5 +72,5 @@ ADD ./debug_linux.sh .
 # add hda-contents for UEFI Shell
 RUN mkdir -p hda-contents
 RUN cd hda-contents && \
-    ln -s ../linux/arch/x86/boot/bzImage && \
-    ln -s ../rootfs/initramfs.cpio.gz
+    ln -sf ../src/linux/arch/x86/boot/bzImage && \
+    ln -sf ../rootfs/initramfs.cpio.gz

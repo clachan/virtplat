@@ -9,13 +9,13 @@ else
   VIRTPLAT_ROOTFS_DRIVE=""
 fi
 
-qemu/build/x86_64-softmmu/qemu-system-x86_64 \
-    -kernel linux/arch/x86/boot/bzImage \
+src/qemu/build/x86_64-softmmu/qemu-system-x86_64 \
+    -kernel src/linux/arch/x86/boot/bzImage \
     -append "console=ttyS0 nokaslr norandmaps $VIRTPLAT_ROOTFS" \
     -initrd rootfs/initramfs.cpio.gz \
-    -blockdev driver=file,filename=edk2/Build/Ovmf3264/DEBUG_CLANGPDB/FV/OVMF_CODE.fd,node-name=libvirt-pflash0-storage,auto-read-only=on,discard=unmap \
+    -blockdev driver=file,filename=src/edk2/Build/Ovmf3264/DEBUG_CLANGPDB/FV/OVMF_CODE.fd,node-name=libvirt-pflash0-storage,auto-read-only=on,discard=unmap \
     -blockdev node-name=libvirt-pflash0-format,read-only=on,driver=raw,file=libvirt-pflash0-storage \
-    -blockdev driver=file,filename=edk2/Build/Ovmf3264/DEBUG_CLANGPDB/FV/OVMF_VARS.fd,node-name=libvirt-pflash1-storage,auto-read-only=on,discard=unmap \
+    -blockdev driver=file,filename=src/edk2/Build/Ovmf3264/DEBUG_CLANGPDB/FV/OVMF_VARS.fd,node-name=libvirt-pflash1-storage,auto-read-only=on,discard=unmap \
     -blockdev node-name=libvirt-pflash1-format,read-only=on,driver=raw,file=libvirt-pflash1-storage \
     -machine pc-q35-5.0,smm=on,pflash0=libvirt-pflash0-format,pflash1=libvirt-pflash1-format \
     -cpu Icelake-Server \
