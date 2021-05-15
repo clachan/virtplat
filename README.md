@@ -3,6 +3,12 @@ My QEMU-based virtual platform setup
 
 ## How to build
 
+Get source code for qemu/edk2/linux/busybox through this script.
+(download the source and store them on the host instead of the container)
+```shell
+./get-source.sh
+```
+
 * replace podman with docker if you prefer to use docker
 
 ```shell
